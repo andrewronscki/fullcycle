@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import useSwr from "swr";
 
 import { useMap } from "../hooks/useMap";
 import { fetcher } from "../utils/http";
 import { Route } from "../utils/model";
+import { socket } from "../utils/socket-io";
 
 export default function Driver() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -18,6 +19,13 @@ export default function Driver() {
   } = useSwr<Route[]>("http://localhost:3333/routes", fetcher, {
     fallbackData: [],
   });
+
+	useEffect(() => {
+		socket.connect();
+		return () => {
+			socket.disconnect();
+		}
+	}, []);
 
   async function startRoute() {
     const routeId = (document.getElementById("route") as HTMLSelectElement)
@@ -45,9 +53,19 @@ export default function Driver() {
     for (const step of steps) {
       await sleep(2000);
       map?.moveCar(routeId, step.start_location);
+			socket.emit('new-points', {
+				route_id: routeId,
+				lat: step.start_location.lat,
+				lng: step.start_location.lng,
+			})
 
       await sleep(2000);
       map?.moveCar(routeId, step.end_location);
+			socket.emit('new-points', {
+				route_id: routeId,
+				lat: step.end_location.lat,
+				lng: step.end_location.lng,
+			})
     }
   }
 
