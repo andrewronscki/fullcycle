@@ -19,7 +19,7 @@ export default function NewRoutePage() {
     const startAddress = directions!.routes[0].legs[0].start_address;
     const endAddress = directions!.routes[0].legs[0].end_address;
 
-    const response = await fetch("http://localhost:3333/routes", {
+    const response = await fetch("http://localhost:3000/api/routes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,8 +43,8 @@ export default function NewRoutePage() {
     ).value;
 
     const [sourceResponse, destinationResponse] = await Promise.all([
-      fetch(`http://localhost:3333/places?text=${source}`),
-      fetch(`http://localhost:3333/places?text=${destination}`),
+      fetch(`http://localhost:3000/api/places?text=${source}`),
+      fetch(`http://localhost:3000/api/places?text=${destination}`),
     ]);
 
     const [sourcePlace, destinationPlace]: FindPlaceFromTextResponseData[] =
@@ -66,7 +66,7 @@ export default function NewRoutePage() {
     const placeDestinationId = destinationPlace.candidates[0].place_id;
 
     const directionsResponse = await fetch(
-      `http://localhost:3333/directions?originId=${placeSourceId}&destinationId=${placeDestinationId}`
+      `http://localhost:3000/api/directions?originId=${placeSourceId}&destinationId=${placeDestinationId}`
     );
     const directionsData: DirectionsResponseData & { request: any } =
       await directionsResponse.json();

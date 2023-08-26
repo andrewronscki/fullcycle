@@ -15,10 +15,10 @@ export default function Admin() {
 		
 		socket.on('admin-new-points', async (data: { route_id: string; lat: number; lng: number; }) => {
 			if (!map?.hasRoute(data.route_id)) {		
-				const response = await fetch(`http://localhost:3333/routes/${data.route_id}`);
+				const response = await fetch(`http://localhost:3000/api/routes/${data.route_id}`);
 				const route: Route = await response.json();
 
-				map?.removeAllRoutes()
+				// map?.removeAllRoutes()
 				await map?.addRouteWithIcons({
 					routeId: data.route_id,
 					startMarkerOptions: {

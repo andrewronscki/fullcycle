@@ -16,7 +16,7 @@ export default function Driver() {
     data: routes,
     error,
     isLoading,
-  } = useSwr<Route[]>("http://localhost:3333/routes", fetcher, {
+  } = useSwr<Route[]>("http://localhost:3000/api/routes", fetcher, {
     fallbackData: [],
   });
 
@@ -31,7 +31,7 @@ export default function Driver() {
     const routeId = (document.getElementById("route") as HTMLSelectElement)
       .value;
 
-    const response = await fetch(`http://localhost:3333/routes/${routeId}`);
+    const response = await fetch(`http://localhost:3000/api/routes/${routeId}`);
     const route = await response.json();
 
     map?.removeAllRoutes();
